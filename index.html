@@ -348,7 +348,7 @@
       var locale = new URLSearchParams(window.location.search).get('locale');
 
       if(version == null) {
-        location.replace('/?locale=ko&version=V1.0.0');
+        location.replace('/?locale=ko&version=V2.0.0');
       } else {
         if(locale == 'ko') {
           return version + '/README_ko.md'; 
@@ -377,7 +377,7 @@
       // -----------------------------------------------------------------
       alias: { // custom setting
         '/V1.0.0/(.*)': getRawGithubUserContentURL() + '/refs/heads/V1.0.0/$1',
-        '/V1.1.0/(.*)': getRawGithubUserContentURL() + '/refs/heads/V1.1.0/$1'
+        '/V2.0.0/(.*)': getRawGithubUserContentURL() + '/refs/heads/V2.0.0/$1'
       },
 
       markdown: {
