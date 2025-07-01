@@ -409,7 +409,41 @@
             }
 
             return this.origin.image.apply(this, [href, title, text]);
-          }, 
+          },
+          html: function(html) {
+            var version = new URLSearchParams(window.location.search).get('version');
+            var currentFullUrl = window.location.toString();
+
+            // Process img tags in HTML
+            html = html.replace(/<img([^>]*)\s+src=["']([^"']+)["']([^>]*)>/gi, function(match, beforeSrc, src, afterSrc) {
+              // Skip if already absolute path
+              if (src.includes("http://") || src.includes("https://")) {
+                return match;
+              }
+
+              // Process relative paths and add version + current directory
+              if ((src.includes('.png') || src.includes('.svg') || src.includes('.jpg') || src.includes('.jpeg') || src.includes('.gif')) && !src.includes(version)) {
+                var hashFragment = getHashFragment(currentFullUrl);
+                var middleDirectories = getMiddleDirectories(hashFragment);
+
+                // Handle different types of relative paths
+                if (src.startsWith('./')) {
+                  // Remove ./ and add version + current directory
+                  src = version + "/" + middleDirectories + src.substring(2);
+                } else if (src.startsWith('../')) {
+                  // Handle ../ paths - need to go up directories
+                  src = version + "/" + middleDirectories + src;
+                } else if (!src.startsWith('/')) {
+                  // Relative path without ./ prefix
+                  src = version + "/" + middleDirectories + src;
+                }
+              }
+
+              return '<div style="padding-top: 10px;"><img' + beforeSrc + ' src="' + getRawGithubUserContentURL() + "/" + src + '"' + afterSrc + '><div>';
+            });
+              
+            return this.origin.html ? this.origin.html.apply(this, [html]) : html;
+          }
         }
       },
 
